@@ -1,10 +1,11 @@
 {
   "name": "grocery_app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Express + SQLite grocery list app (CPST342 Lab 3)",
+  "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,6 +17,9 @@
     "sqlite3": "^5.1.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^3.1.14"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

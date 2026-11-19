@@ -1,47 +1,130 @@
-const express = require('express')
+// Name: [YOUR NAME HERE]
+// Course: CPST342 - Lab 3
+
+const path = require('path');
+const express = require('express');
 const dbOperations = require('./database.js');
-const app = express()
-const port = 3000
 
-/**To serve static files such as images, CSS files, and JavaScript files, create a folders
-* and include the below statement.  The below statement assumes that I have a folder named assets
-**/
-app.use(express.static('assets'))
+const app = express();
+const port = process.env.PORT || 3000; // allow the port to be configured
 
-// view engine setup
-app.set("view engine", "hbs");
+/**
+ * Serve static files (images, CSS, client-side JavaScript) from the
+ * `assets` folder. Example: assets/css/styles.css -> /css/styles.css
+ */
+app.use(express.static(path.join(__dirname, 'assets')));
 
-// parse application/json
+// View engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
+
+// Parse application/json
 app.use(express.json());
 
-// For parsing application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+// Parse application/x-www-form-urlencoded (HTML form submissions)
+app.use(express.urlencoded({ extended: false }));
 
-// Rout to  home
-app.get('/', function (req, res) {
-	
-	dbOperations.getAllItems(res);
+/* ------------------------- Helpers ------------------------- */
 
-})
+// Validate grocery form input on the server. Never trust the browser alone:
+// HTML `required`/`min` attributes can be bypassed.
+function validateItem({ item_name, item_count }) {
+  const name = typeof item_name === 'string' ? item_name.trim() : '';
+  const count = Number(item_count);
+  const errors = [];
+
+  if (!name) errors.push('Grocery item name is required.');
+  if (name.length > 100) errors.push('Grocery item name must be 100 characters or fewer.');
+  if (!Number.isInteger(count) || count < 1) errors.push('Quantity must be a whole number of at least 1.');
+
+  return { errors, item: { item_name: name, item_count: count } };
+}
+
+// Validate a record ID coming from a form or URL.
+function parseId(value) {
+  const id = Number(value);
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
+
+// Render the home page with the current list (plus an optional error message).
+async function renderIndex(res, { status = 200, errors = [], form = {} } = {}) {
+  const rows = await dbOperations.getAllItems();
+  res.status(status).render('index', { rows, errors, form });
+}
+
+/* -------------------------- Routes -------------------------- */
+// Express 4 does not catch errors thrown inside async functions, so each
+// async route wraps its work in try/catch and passes errors to next().
+
+// Route to home - display all grocery items
+app.get('/', async (req, res, next) => {
+  try {
+    await renderIndex(res);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // Route to create a grocery list item
- app.post('/create_item', function (req, res) {
-	//Getting body parameters
-	const { item_name, item_count} =req.body;
+app.post('/create_item', async (req, res, next) => {
+  try {
+    const { errors, item } = validateItem(req.body);
+    if (errors.length) {
+      return await renderIndex(res, { status: 400, errors, form: req.body });
+    }
 
-	//Execute creatItems method
-	dbOperations.createItem(item_name, item_count, res);
+    await dbOperations.createItem(item.item_name, item.item_count);
 
-	
- })
+    // Post/Redirect/Get: redirect after a successful POST so refreshing the
+    // page does not submit the form a second time.
+    res.redirect('/');
+  } catch (err) {
+    next(err);
+  }
+});
 
- // Route that allows me to delete a grocery list item
- app.post('/delete_item', function (req, res) {
-	//Getting body parameters
-	const { deleterecord} = req.body;
-	dbOperations.deleteItem(deleterecord, res);
-	
- })
+// Route that allows me to delete a grocery list item
+app.post('/delete_item', async (req, res, next) => {
+  try {
+    const itemID = parseId(req.body.deleterecord);
+    if (!itemID) {
+      return await renderIndex(res, { status: 400, errors: ['Invalid item selected.'] });
+    }
 
- 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+    await dbOperations.deleteItem(itemID);
+    res.redirect('/');
+  } catch (err) {
+    next(err);
+  }
+});
+
+// TODO (Lab 3 - Step 4): add your update route(s) here.
+
+/* ---------------------- Error handling ---------------------- */
+
+// 404 - no route matched
+app.use((req, res) => {
+  res.status(404).send('404 - Page not found');
+});
+
+// 500 - something went wrong (must have 4 arguments for Express to treat it
+// as an error handler). Log details on the server; don't leak them to users.
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send('500 - Something went wrong. Check the server console.');
+});
+
+/* ----------------------- Start server ----------------------- */
+
+const server = app.listen(port, () => {
+  console.log(`Grocery app listening at http://localhost:${port}`);
+});
+
+// Shut down gracefully (Ctrl+C) so the database file is closed properly.
+process.on('SIGINT', () => {
+  server.close(async () => {
+    await dbOperations.close();
+    console.log('Server stopped and database closed.');
+    process.exit(0);
+  });
+});

@@ -1,0 +1,17 @@
+/* Custom styles for the grocery list app.
+ * Keeping CSS in its own file (instead of a <style> block) keeps the
+ * template focused on structure and lets the browser cache the styles. */
+
+main.container {
+  max-width: 800px;
+}
+
+/* Place the Delete (and your Update) buttons side by side */
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actions form {
+  margin: 0;
+}

@@ -1,66 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Family Grocery List</title>
-         <meta charset="UTF-8">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <style>
-            #container{
-                width: 50%;
-                margin: auto;
-            }
-            table {
-                font-family: arial, sans-serif;
-                border-collapse: collapse;
-                width: 100%;
-                }
-
-                td, th {
-                border: 1px solid #dddddd;
-                text-align: left;
-                padding: 8px;
-                }
-
-                tr:nth-child(even) {
-                background-color: #dddddd;
-            }
-        </style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+        <!-- Custom styles live in assets/css/styles.css (served by express.static) -->
+        <link rel="stylesheet" href="/css/styles.css">
     </head>
     <body>
-        <div id="container">
+        <main class="container my-4">
             <h1>Family Grocery List</h1>
 
-            
-            <!--Form to accept grocery data-->
+            {{#if errors.length}}
+            <div class="alert alert-danger" role="alert">
+                <ul class="mb-0">
+                    {{#each errors}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+
+            <!-- Form to accept grocery data -->
             <h2>Enter Grocery Item:</h2>
             <form action="/create_item" method="POST">
-                <input type="text"  name="item_name" class="form-control"  placeholder="Enter grocery item (ex. Cereal)" size="40"><br>
-                <input type="number"  name="item_count" class="form-control" placeholder="Enter quantity (ex. 2)" size="60"><br>
-                <input type="submit" class="btn btn-primary" value="submit">
+                <div class="form-group">
+                    <label for="item_name">Grocery item</label>
+                    <input type="text" id="item_name" name="item_name" class="form-control"
+                           placeholder="Enter grocery item (ex. Cereal)" maxlength="100"
+                           value="{{form.item_name}}" required>
+                </div>
+                <div class="form-group">
+                    <label for="item_count">Quantity</label>
+                    <input type="number" id="item_count" name="item_count" class="form-control"
+                           placeholder="Enter quantity (ex. 2)" min="1" step="1"
+                           value="{{form.item_count}}" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Item</button>
             </form>
 
             <!-- Display Grocery Items -->
-            <h2>Grocery List:</h2>
-            <table style="margin: 20px;">
-                    <tr>
-                        <th>Grocery Item</th>
-                        <th>Quantity</th>
-                        <th>MODIFY</th>
-                    </tr>
-                {{#each rows}}
-                    <tr>
-                        <td>{{this.item_name}}</td>
-                        <td>{{this.item_count}}</td>
-                        <td>
-                            <form action="/delete_item" method="POST">
-                                <button name="deleterecord" id="deletenow" type="submit" class="btn btn-danger" value="{{this.itemID}}">DELETE</button>
-                            </form>
-                        </td>
-                        
-                    </tr>
-                {{/each}}
-            </table>
-        </div>
+            <h2 class="mt-4">Grocery List:</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Grocery Item</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Modify</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {{#each rows}}
+                        <tr>
+                            <td>{{this.item_name}}</td>
+                            <td>{{this.item_count}}</td>
+                            <td class="actions">
+                                <!-- TODO (Lab 3 - Step 2): add your Update form/button here -->
+                                <form action="/delete_item" method="POST">
+                                    <button name="deleterecord" type="submit" class="btn btn-danger btn-sm"
+                                            value="{{this.itemID}}">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {{else}}
+                        <tr>
+                            <td colspan="3" class="text-muted">Your grocery list is empty. Add an item above.</td>
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </main>
     </body>
-
 </html>
