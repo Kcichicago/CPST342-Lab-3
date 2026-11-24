@@ -1,4 +1,4 @@
-// Name: [Kcichicago]
+// Name: Kcichicago
 // Course: CPST342 - Lab 3
 
 const path = require('path');
