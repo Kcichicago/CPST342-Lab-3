@@ -58,6 +58,9 @@
                             <td>{{this.item_count}}</td>
                             <td class="actions">
                                 <!-- TODO (Lab 3 - Step 2): add your Update form/button here -->
+                                <form action="/[ADD YOUR OWN UPDATE PATH]" method="[GET OR POST - SEE NOTE BELOW]">
+                                <button name="[ADD A NAME]" type="submit" class="btn btn-warning btn-sm" value="{{this.itemID}}">Update</button>
+                                </form>
                                 <form action="/delete_item" method="POST">
                                     <button name="deleterecord" type="submit" class="btn btn-danger btn-sm"
                                             value="{{this.itemID}}">Delete</button>
