@@ -111,8 +111,8 @@ The lecture videos listed under week 5 will walk you through how the application
 
 [OWASP - SQL Injection Prevention (Parameterized Queries)](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)
 
-### Submission Information
+### Lab Completion Information
 - Name: Kcichicago
-- Course: CPST 342 / DIGH 403, Lab 3
+- Course: CPST 342 / DIGH 403, Lab #3
 - Completion Date: November 25, 2026
 

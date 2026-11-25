@@ -118,7 +118,7 @@ app.post('/update_item', async (req, res, next) => {
     // 2. await dbOperations.updateItem(...)
     const result = await dbOperations.updateItem(itemID, item.item_name, item.item_count, item.description);
     if (result.changes === 0) {
-      return await renderIndex(res, { status: 404, errors: ['That item no longer exists.'] });
+      return await renderIndex(res, { status: 404, errors: ['That is not available.'] });
     }
 
     // 3. res.redirect('/')   <- Post/Redirect/Get: refreshing the page won't resubmit the form
@@ -138,7 +138,7 @@ app.get('/edit_item/:id', async (req, res, next) => {
 
     const item = await dbOperations.getItemById(itemID);
     if (!item) {
-      return await renderIndex(res, { status: 404, errors: ['That item no longer exists.'] });
+      return await renderIndex(res, { status: 404, errors: ['That item is not available.'] });
     }
     res.render('edit', { item });
   } catch (err) {
