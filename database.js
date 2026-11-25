@@ -83,9 +83,12 @@ const deleteItem = (itemID) =>
 
 // TODO (Lab 3 - Step 3): add an `updateItem(itemID, item_name, item_count)`
 // function here and add it to module.exports below.
+// Update a grocery list item
+const updateItem = (itemID, item_name, item_count) =>
+  run('UPDATE pets SET pet_name = ?, pet_age = ? WHERE petID = ?', [pet_name, pet_age, petID]);
 
 // Close the connection cleanly when the server shuts down.
 const close = () =>
   new Promise((resolve, reject) => db.close((err) => (err ? reject(err) : resolve())));
 
-module.exports = { getAllItems, getItemById, createItem, deleteItem, close };
+module.exports = { getAllItems, getItemById, createItem, deleteItem, updateItem,close };
