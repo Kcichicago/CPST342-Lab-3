@@ -67,7 +67,7 @@
                             <td class="actions">
                                 <!-- TODO (Lab 3 - Step 2): add your Update form/button here -->
                                 <form action="/edit_item/{{this.itemID}}" method="GET">
-                                    <button name="updaterecord" type="submit" class="btn btn-warning btn-sm" value="{{this.itemID}}">Update</button>
+                                    <button name="item_to_edit" type="submit" class="btn btn-warning btn-sm" value="{{this.itemID}}">Update</button>
                                 </form>
                                 <form action="/delete_item" method="POST">
                                     <button name="deleterecord" type="submit" class="btn btn-danger btn-sm"

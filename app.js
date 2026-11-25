@@ -118,7 +118,7 @@ app.post('/update_item', async (req, res, next) => {
     // 2. await dbOperations.updateItem(...)
     const result = await dbOperations.updateItem(itemID, item.item_name, item.item_count, item.description);
     if (result.changes === 0) {
-      return await renderIndex(res, { status: 404, errors: ['That is not available.'] });
+      return await renderIndex(res, { status: 404, errors: ['That item is not available.'] });
     }
 
     // 3. res.redirect('/')   <- Post/Redirect/Get: refreshing the page won't resubmit the form
