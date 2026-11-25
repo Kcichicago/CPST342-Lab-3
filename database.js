@@ -36,7 +36,7 @@ db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS grocery_item (
     itemID     INTEGER PRIMARY KEY AUTOINCREMENT,
     item_name  TEXT    NOT NULL,
-    item_count INTEGER
+    item_count INTEGER, description TEXT
   )`);
 });
 
@@ -67,15 +67,15 @@ const get = (sql, params = []) =>
 
 // Display all grocery list items
 const getAllItems = () =>
-  all('SELECT itemID, item_name, item_count FROM grocery_item ORDER BY itemID');
+  all('SELECT itemID, item_name, item_count, description FROM grocery_item ORDER BY itemID');
 
 // Get a single grocery list item by its ID (useful for an "edit" page)
 const getItemById = (itemID) =>
-  get('SELECT itemID, item_name, item_count FROM grocery_item WHERE itemID = ?', [itemID]);
+  get('SELECT itemID, item_name, item_count, description FROM grocery_item WHERE itemID = ?', [itemID]);
 
 // Create a grocery list item
-const createItem = (item_name, item_count) =>
-  run('INSERT INTO grocery_item (item_name, item_count) VALUES (?, ?)', [item_name, item_count]);
+const createItem = (item_name, item_count, description) =>
+  run('INSERT INTO grocery_item (item_name, item_count, description) VALUES (?, ?, ?)', [item_name, item_count, description]);
 
 // Delete a grocery list item
 const deleteItem = (itemID) =>
@@ -84,8 +84,8 @@ const deleteItem = (itemID) =>
 // TODO (Lab 3 - Step 3): add an `updateItem(itemID, item_name, item_count)`
 // function here and add it to module.exports below.
 // Update a grocery list item
-const updateItem = (itemID, item_name, item_count) =>
-  run('UPDATE grocery_item SET item_name = ?, item_count = ? WHERE itemID = ?', [item_name, item_count, itemID]);
+const updateItem = (itemID, item_name, item_count, description) =>
+  run('UPDATE grocery_item SET item_name = ?, item_count = ?, description = ? WHERE itemID = ?', [item_name, item_count, description, itemID]);
 
 // Close the connection cleanly when the server shuts down.
 const close = () =>

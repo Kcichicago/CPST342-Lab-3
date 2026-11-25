@@ -38,6 +38,12 @@
                            placeholder="Enter quantity (ex. 2)" min="1" step="1"
                            value="{{item.item_count}}" required>
                 </div>
+                <div class="form-group">
+                    <label for="description">Description (optional)</label>
+                    <input type="text" id="description" name="description" class="form-control"
+                            placeholder="Enter description (ex. Whole grain)" maxlength="100"
+                            value="{{item.description}}">
+                </div>
                 <button type="submit" class="btn btn-primary">Save changes</button>
                 <a href="/" class="btn btn-secondary">Cancel</a>
             </form>
