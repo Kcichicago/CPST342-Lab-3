@@ -107,10 +107,10 @@ app.post('/update_item', async (req, res, next) => {
     if (!itemID) {
       return await renderIndex(res, { status: 400, errors: ['Invalid item selected.'] });
     }
-    
+
     const { errors, item } = validateItem(req.body);
     if (errors.length) {
-      return await renderIndex(res, { status: 400, errors });
+      return res.status(400).render('edit', { errors, item: req.body });
     }
 
     // 2. await dbOperations.updateItem(...)
@@ -123,6 +123,24 @@ app.post('/update_item', async (req, res, next) => {
     res.redirect('/');
   } catch (err) {
     next(err); // passes the error to the error-handling middleware
+  }
+});
+
+// Route to display the edit page for one grocery list item
+app.get('/edit_item/:id', async (req, res, next) => {
+  try {
+    const itemID = parseId(req.params.id);
+    if (!itemID) {
+      return await renderIndex(res, { status: 400, errors: ['Invalid item selected.'] });
+    }
+
+    const item = await dbOperations.getItemById(itemID);
+    if (!item) {
+      return await renderIndex(res, { status: 404, errors: ['That item no longer exists.'] });
+    }
+    res.render('edit', { item });
+  } catch (err) {
+    next(err);
   }
 });
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Family Grocery List - Update</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+        <!-- Custom styles live in assets/css/styles.css (served by express.static) -->
+        <link rel="stylesheet" href="/css/styles.css">
+    </head>
+    <body>
+        <main class="container my-4">
+            <h1>Family Grocery List - Update</h1>
+
+            {{#if errors.length}}
+            <div class="alert alert-danger" role="alert">
+                <ul class="mb-0">
+                    {{#each errors}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+
+            <!-- Form to update a grocery item -->
+            <h2>Update Item:</h2>
+            <form action="/update_item" method="POST">
+                <input type="hidden" name="itemID" value="{{item.itemID}}">
+                <div class="form-group">
+                    <label for="item_name">Grocery item</label>
+                    <input type="text" id="item_name" name="item_name" class="form-control"
+                           placeholder="Enter grocery item (ex. Cereal)" maxlength="100"
+                           value="{{item.item_name}}" required>
+                </div>
+                <div class="form-group">
+                    <label for="item_count">Quantity</label>
+                    <input type="number" id="item_count" name="item_count" class="form-control"
+                           placeholder="Enter quantity (ex. 2)" min="1" step="1"
+                           value="{{item.item_count}}" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+                <a href="/" class="btn btn-secondary">Cancel</a>
+            </form>
+        </main>
+    </body>
+</html>
