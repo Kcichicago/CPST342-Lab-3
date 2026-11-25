@@ -99,6 +99,32 @@ app.post('/delete_item', async (req, res, next) => {
 });
 
 // TODO (Lab 3 - Step 4): add your update route(s) here.
+// Route to update a grocery list item
+app.post('/update_item', async (req, res, next) => {
+  try {
+    // 1. Read and validate the values from req.body (see validateItem and parseId in app.js)
+    const itemID = parseId(req.body.itemID);
+    if (!itemID) {
+      return await renderIndex(res, { status: 400, errors: ['Invalid item selected.'] });
+    }
+    
+    const { errors, item } = validateItem(req.body);
+    if (errors.length) {
+      return await renderIndex(res, { status: 400, errors });
+    }
+
+    // 2. await dbOperations.updateItem(...)
+    const result = await dbOperations.updateItem(itemID, item.item_name, item.item_count);
+    if (result.changes === 0) {
+      return await renderIndex(res, { status: 404, errors: ['That item no longer exists.'] });
+    }
+
+    // 3. res.redirect('/')   <- Post/Redirect/Get: refreshing the page won't resubmit the form
+    res.redirect('/');
+  } catch (err) {
+    next(err); // passes the error to the error-handling middleware
+  }
+});
 
 /* ---------------------- Error handling ---------------------- */
 
