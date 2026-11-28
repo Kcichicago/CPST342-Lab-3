@@ -15,3 +15,16 @@ main.container {
 .actions form {
   margin: 0;
 }
+
+/* Darker blue for the primary buttons, so white text meets WCAG AA
+ * contrast (4.5:1). Bootstrap's default blue measures approximately 4.0:1. */
+.btn-primary {
+  background-color: #0062cc;
+  border-color: #0062cc;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
