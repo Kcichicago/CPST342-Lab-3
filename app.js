@@ -36,7 +36,7 @@ function validateItem({ item_name, item_count, description }) {
 
   if (!name) errors.push('Grocery item name is required.');
   if (name.length > 100) errors.push('Grocery item name must be 100 characters or fewer.');
-  if (desc.length > 100) errors.push('Description must be 100 characters or fewer.');
+  if (desc.length > 100) errors.push('The description must be 100 characters or fewer.');
   if (!Number.isInteger(count) || count < 1) errors.push('Quantity must be a whole number of at least 1.');
 
   return { errors, item: { item_name: name, item_count: count, description: desc } };
